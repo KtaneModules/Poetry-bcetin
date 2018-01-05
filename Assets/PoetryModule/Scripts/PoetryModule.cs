@@ -12,12 +12,19 @@ public class PoetryModule : MonoBehaviour {
 	public TextMesh stageCounter;
 	public TextMesh[] words;
 	public KMSelectable[] wordSelectables;
+	public Sprite[] girlsDefault;
+	public Sprite[] girlsJumpy;
+	public SpriteRenderer girlSR,heart;
 	public int stageCount;
 	private static int _moduleIdCounter = 1;
 	private int _moduleId;
 	bool solved = false;
 	int currentStage=0;
 	int winner = -1;
+	int pickedGirl;
+	float baseY,animStartTime=-10;
+	public float jumpV;
+	bool isJump = false;
 	// Use this for initialization
 	int tableH=3, tableW=3;
 	string[,] wordTable = new string[,]
@@ -33,6 +40,8 @@ public class PoetryModule : MonoBehaviour {
 		_moduleId = _moduleIdCounter++;
 		Module.OnActivate += ActivateModule;
 		Info.OnBombExploded += BombExploded;
+		baseY = girlSR.transform.localPosition.z;
+		RemoveGirl();
 		for (int i = 0; i < 6; i++)
 		{
 			int j = i;
@@ -47,7 +56,36 @@ public class PoetryModule : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		
+		if (isJump)
+		{
+			float Y = CalcY();
+			if (Y > 0)
+				girlSR.transform.localPosition = new Vector3(girlSR.transform.localPosition.x, girlSR.transform.localPosition.y, Y + baseY);
+			else
+			{
+				isJump = false;
+				if(currentStage != stageCount)
+					girlSR.sprite = girlsDefault[pickedGirl];
+				girlSR.transform.localPosition = new Vector3(girlSR.transform.localPosition.x, girlSR.transform.localPosition.y, baseY);
+			}
+		}
+	}
+
+	float CalcY() // Calculate Jump Height
+	{
+		float t = (Time.time - animStartTime),g=-4,jump1Time=-2*jumpV/g,result=0,jump2mul=0.8f,jump2Time= -2 * jumpV / g * jump2mul;
+		if(t> jump1Time + jump1Time)
+		{
+			isJump = false;
+		}
+		if (t > jump1Time)
+		{
+			t -= jump1Time;
+			result = jumpV * t * jump2mul + 1 / 2f * g * t * t; ;
+		}
+		else
+			result = jumpV * t + 1 / 2f * g * t * t;
+		return result;
 	}
 
 	void RemoveWords()
@@ -68,7 +106,7 @@ public class PoetryModule : MonoBehaviour {
 
 	void PrintStageCount()
 	{
-		stageCounter.text = currentStage + 1 + "/" + stageCount;
+		stageCounter.text = currentStage + "/" + stageCount;
 	}
 	void SelectRandomWords()
 	{
@@ -104,8 +142,23 @@ public class PoetryModule : MonoBehaviour {
 		return wordTable[kvp.Key,kvp.Value];
 	}
 
+	void PickGirl()
+	{
+		 pickedGirl = Random.Range(0, 4);
+	}
+
+	void PrintGirl()
+	{
+		girlSR.sprite = girlsDefault[pickedGirl];
+	}
+	void RemoveGirl()
+	{
+		girlSR.sprite = null;
+	}
 	void ActivateModule()
 	{
+		PickGirl();
+		PrintGirl();
 		NewStage();
 	}
 
@@ -120,19 +173,36 @@ public class PoetryModule : MonoBehaviour {
 		if (which == winner)
 		{
 			Correct();
-			NewStage();
 		}
 		else
 			Wrong();
 	}
+	void Jump()
+	{
+		isJump = true;
+		animStartTime = Time.time;
+		girlSR.sprite = girlsJumpy[pickedGirl];
+	}
+	void TurnOffInteraction()
+	{
 
+	}
 	void Correct()
 	{
+		Jump();
 		PrintDebug("Correct Word!");
-		if (currentStage == stageCount-1)
+		currentStage++;
+		if (currentStage == stageCount)
+		{
 			Module.HandlePass();
+			heart.enabled = true;
+			RemoveWords();
+			PrintStageCount();
+		}
 		else
-			currentStage++;
+		{
+			NewStage();
+		}
 		//Jump the girl
 	}
 
