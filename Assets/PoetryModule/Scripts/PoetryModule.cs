@@ -20,18 +20,23 @@ public class PoetryModule : MonoBehaviour {
 	private int _moduleId;
 	bool solved = false;
 	int currentStage=0;
-	int winner = -1;
+	List<int> winners;
 	int pickedGirl;
 	float baseY,animStartTime=-10;
 	public float jumpV;
 	bool isJump = false;
 	// Use this for initialization
-	int tableH=3, tableW=3;
+	int tableH=7, tableW=7;
+	public Vector2[] girlLocations;
 	string[,] wordTable = new string[,]
 	{
-		{"word1","word2","word3"},
-		{"word4","word5","word6"},
-		{"word7","word8","word9"}
+		{"Melanie","testWord1","ocean","fatigue","testWord2","hollow","Jane"},
+		{"energy","testWord3","testWord4","testWord5","scream","identity","black"},
+		{"white","future","testWord6","wilderness","testWord7","search","worth"},
+		{"crowd","dance","heart","words","emotion","past","solitary"},
+		{"relax","sunshine","weightless","weather","morality","testWord8","will"},
+		{"bunny","lovely","romance","touch","compassion","focus","patience"},
+		{"Hana","cookies","testWord9","testWord10","testWord11","testWord12","Lacy"}
 	};
 	KeyValuePair<int, int>[] selection=new KeyValuePair<int, int>[6];
 
@@ -41,6 +46,7 @@ public class PoetryModule : MonoBehaviour {
 		Module.OnActivate += ActivateModule;
 		Info.OnBombExploded += BombExploded;
 		baseY = girlSR.transform.localPosition.z;
+		winners = new List<int>();
 		RemoveGirl();
 		for (int i = 0; i < 6; i++)
 		{
@@ -113,9 +119,10 @@ public class PoetryModule : MonoBehaviour {
 		List<KeyValuePair<int, int>> myList= new List<KeyValuePair<int, int>>();
 		for(int i=0; i< tableH; i++)
 			for (int j = 0; j < tableW; j++)
-			{
+				if(!((i==0 || i==tableH-1) && (j==0 || j==tableW-1)))
+				{
 				myList.Add(new KeyValuePair<int,int>(i,j));
-			}
+				}
 		for(int i=0;i<6;i++)
 		{
 			int pick = Random.Range(0,myList.Count-1);
@@ -134,7 +141,28 @@ public class PoetryModule : MonoBehaviour {
 
 	void CalculateWinner()
 	{
-		winner = 0;
+		int value = 100;
+		winners.Clear();
+		for(int i=0;i<6;i++)
+		{
+			int dist = (int)Mathf.Abs(girlLocations[pickedGirl].x - selection[i].Key) + (int)Mathf.Abs(girlLocations[pickedGirl].y - selection[i].Value);
+			PrintDebug("'" + wordTable[selection[i].Key, selection[i].Value] + "'s location on table: " + (selection[i].Value + 1) + " " + (selection[i].Key + 1) +"\n"+
+			"Distance: " + dist);
+			if(dist == value)
+			{
+				winners.Add(i);
+			}
+			if(dist < value)
+			{
+				value = dist;
+				winners.Clear();
+				winners.Add(i);
+			}
+		}
+		string dbg = "Correct Word(s): ";
+		foreach (int i in winners)
+			dbg = dbg + " " + wordTable[selection[i].Key, selection[i].Value];
+		PrintDebug(dbg);
 	}
 
 	string KVPToWord(KeyValuePair<int,int> kvp)
@@ -145,6 +173,7 @@ public class PoetryModule : MonoBehaviour {
 	void PickGirl()
 	{
 		 pickedGirl = Random.Range(0, 4);
+		PrintDebug("Picked girl " + wordTable[(int)girlLocations[pickedGirl].x, (int)girlLocations[pickedGirl].y] + "'s location on table: " + ((int)girlLocations[pickedGirl].y + 1) + " " + ((int)girlLocations[pickedGirl].x + 1));
 	}
 
 	void PrintGirl()
@@ -170,7 +199,7 @@ public class PoetryModule : MonoBehaviour {
 	void OnPress(int which)
 	{
 		PrintDebug("Selected '" + KVPToWord(selection[which]) +"'.");
-		if (which == winner)
+		if (winners.Contains(which))
 		{
 			Correct();
 		}
@@ -185,7 +214,10 @@ public class PoetryModule : MonoBehaviour {
 	}
 	void TurnOffInteraction()
 	{
-
+		foreach(KMSelectable sel in wordSelectables)
+		{
+			sel.gameObject.SetActive(false);
+		}
 	}
 	void Correct()
 	{
@@ -198,6 +230,7 @@ public class PoetryModule : MonoBehaviour {
 			heart.enabled = true;
 			RemoveWords();
 			PrintStageCount();
+			TurnOffInteraction();
 		}
 		else
 		{
@@ -210,6 +243,7 @@ public class PoetryModule : MonoBehaviour {
 	{
 		PrintDebug("Wrong Word!");
 		Module.HandleStrike();
+		NewStage();
 	}
 	private void PrintDebug(string str)
 	{
