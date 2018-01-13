@@ -225,7 +225,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Examples\1.1 Module\ExampleModule.cs" />
     <Compile Include="Assets\PoetryModule\Scripts\KMBombInfoExtensions.cs" />
     <Compile Include="Assets\PoetryModule\Scripts\PoetryModule.cs" />
     <Compile Include="Assets\TestHarness\TestHarness.cs" />

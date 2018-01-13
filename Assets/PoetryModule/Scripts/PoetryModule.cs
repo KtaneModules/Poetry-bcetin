@@ -22,8 +22,8 @@ public class PoetryModule : MonoBehaviour {
 	int currentStage=0;
 	List<int> winners;
 	int pickedGirl;
-	float baseY,animStartTime=-10;
-	public float jumpV;
+	float baseY,myAnimTime=-10;
+	public float jumpV,jumpTimeSpeed;
 	bool isJump = false;
 	// Use this for initialization
 	int tableH=7, tableW=7;
@@ -65,6 +65,7 @@ public class PoetryModule : MonoBehaviour {
 		if (isJump)
 		{
 			float Y = CalcY();
+			myAnimTime += jumpTimeSpeed;
 			if (Y > 0)
 				girlSR.transform.localPosition = new Vector3(girlSR.transform.localPosition.x, girlSR.transform.localPosition.y, Y + baseY);
 			else
@@ -79,8 +80,8 @@ public class PoetryModule : MonoBehaviour {
 
 	float CalcY() // Calculate Jump Height
 	{
-		float t = (Time.time - animStartTime),g=-4,jump1Time=-2*jumpV/g,result=0,jump2mul=0.8f,jump2Time= -2 * jumpV / g * jump2mul;
-		if(t> jump1Time + jump1Time)
+		float t = myAnimTime,g=-4,jump1Time=-2*jumpV/g,result=0,jump2mul=0.8f,jump2Time= -2 * jumpV / g * jump2mul;
+		if(t> jump1Time + jump2Time)
 		{
 			isJump = false;
 		}
@@ -146,8 +147,7 @@ public class PoetryModule : MonoBehaviour {
 		for(int i=0;i<6;i++)
 		{
 			int dist = (int)Mathf.Abs(girlLocations[pickedGirl].x - selection[i].Key) + (int)Mathf.Abs(girlLocations[pickedGirl].y - selection[i].Value);
-			PrintDebug("'" + wordTable[selection[i].Key, selection[i].Value] + "'s location on table: " + (selection[i].Value + 1) + " " + (selection[i].Key + 1) +"\n"+
-			"Distance: " + dist);
+			PrintDebug("'" + wordTable[selection[i].Key, selection[i].Value] + "'s location on table: " + (selection[i].Value + 1) + " " + (selection[i].Key + 1) +" Distance: " + dist);
 			if(dist == value)
 			{
 				winners.Add(i);
@@ -209,7 +209,7 @@ public class PoetryModule : MonoBehaviour {
 	void Jump()
 	{
 		isJump = true;
-		animStartTime = Time.time;
+		myAnimTime = 0.001f;
 		girlSR.sprite = girlsJumpy[pickedGirl];
 	}
 	void TurnOffInteraction()
@@ -219,9 +219,14 @@ public class PoetryModule : MonoBehaviour {
 			sel.gameObject.SetActive(false);
 		}
 	}
+	void PlayPenSound()
+	{
+		Audio.PlaySoundAtTransform("pen" + Random.Range(1,4), transform);
+	}
 	void Correct()
 	{
 		Jump();
+		PlayPenSound();
 		PrintDebug("Correct Word!");
 		currentStage++;
 		if (currentStage == stageCount)
