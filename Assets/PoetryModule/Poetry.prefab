@@ -1613,9 +1613,9 @@ MonoBehaviour:
   jumpTimeSpeed: 0.012
   girlLocations:
   - {x: 0, y: 0}
-  - {x: 0, y: 6}
-  - {x: 6, y: 6}
-  - {x: 6, y: 0}
+  - {x: 0, y: 5}
+  - {x: 5, y: 5}
+  - {x: 5, y: 0}
 --- !u!114 &114818550983675938
 MonoBehaviour:
   m_ObjectHideFlags: 1

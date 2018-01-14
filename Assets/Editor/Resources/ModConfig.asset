@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: ModConfig
   m_EditorClassIdentifier: 
   id: Poetry
-  title: Poetry Test
-  description: Testing B)
-  version: 0.6
+  title: Poetry Module
+  description: Pick the correct words to write a poem for her.
+  version: 1.0.0
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: 4ca4641e4b28fcc4481f3df08dd2192f, type: 3}
+  previewImage: {fileID: 2800000, guid: 3c4e370c638694c4fb2eaa8cdb2a52f1, type: 3}

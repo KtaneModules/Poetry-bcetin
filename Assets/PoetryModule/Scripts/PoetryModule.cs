@@ -26,17 +26,16 @@ public class PoetryModule : MonoBehaviour {
 	public float jumpV,jumpTimeSpeed;
 	bool isJump = false;
 	// Use this for initialization
-	int tableH=7, tableW=7;
+	int tableH=6, tableW=6;
 	public Vector2[] girlLocations;
 	string[,] wordTable = new string[,]
 	{
-		{"Melanie","testWord1","ocean","fatigue","testWord2","hollow","Jane"},
-		{"energy","testWord3","testWord4","testWord5","scream","identity","black"},
-		{"white","future","testWord6","wilderness","testWord7","search","worth"},
-		{"crowd","dance","heart","words","emotion","past","solitary"},
-		{"relax","sunshine","weightless","weather","morality","testWord8","will"},
-		{"bunny","lovely","romance","touch","compassion","focus","patience"},
-		{"Hana","cookies","testWord9","testWord10","testWord11","testWord12","Lacy"}
+		{"Melanie","clarity","flow","fatigue","hollow","Jane"},
+		{"energy","sunshine","ocean","reflection","identity","black"},
+		{"crowd","heart","weather","words","past","solitary"},
+		{"relax","dance","weightless","morality","gaze","failure"},
+		{"bunny","lovely","romance","future","focus","search"},
+		{"Hana","cookies","compassion","creation","patience","Lacy"}
 	};
 	KeyValuePair<int, int>[] selection=new KeyValuePair<int, int>[6];
 
