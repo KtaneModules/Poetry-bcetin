@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Random = UnityEngine.Random;
 
 public class PoetryModule : MonoBehaviour {
 
@@ -243,7 +243,28 @@ public class PoetryModule : MonoBehaviour {
 		//Jump the girl
 	}
 
-	void Wrong()
+    private string TwitchHelpMessage = "Submit your answer with !{0} press bunny, or !{0} bunny.";
+    public KMSelectable[] ProcessTwitchCommand(string command)
+    {
+        string[] split = command.ToLowerInvariant().Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+        if (split.Length > 2) return null;
+        if (split.Length == 2)
+        {
+            if (split[0] == "press" || split[0] == "submit")
+                split = split.Skip(1).ToArray();
+            else
+                return null;
+        }
+        for (int i = 0; i < 6; i++)
+        {
+            if (words[i].text.ToLowerInvariant().Equals(split[0]))
+                return new[] {wordSelectables[i]};
+        }
+        return null;
+    }
+
+
+    void Wrong()
 	{
 		PrintDebug("Wrong Word!");
 		Module.HandleStrike();
