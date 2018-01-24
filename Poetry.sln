@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poetry", "Poetry.csproj", "{35310B8A-39D2-3E7A-16FA-9BC5E4F22779}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poetry.Editor", "Poetry.Editor.csproj", "{7061E0C6-D194-A0B1-2481-FE56A85E9330}"
